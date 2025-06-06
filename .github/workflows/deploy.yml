@@ -28,7 +28,7 @@ jobs:
 
             # 1. 디렉토리가 없으면 clone, 있으면 pull
             if [ ! -d ~/gateway ]; then
-              git clone -b develop https://github.com/YOUR_ID/YOUR_REPO.git ~/gateway
+              git clone -b develop https://github.com/Hminchae/msa-gateway.git ~/gateway
             fi
 
             cd ~/gateway
