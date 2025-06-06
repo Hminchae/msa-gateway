@@ -1,0 +1,30 @@
+name: Deploy Gateway
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  deploy-gateway:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.EC2_GATEWAY_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.EC2_GATEWAY_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy to EC2 (Gateway)
+        run: |
+          ssh ${{ secrets.EC2_GATEWAY_USER }}@${{ secrets.EC2_GATEWAY_HOST }} << 'EOF'
+            cd ~/gateway
+            git pull origin develop
+            ./gradlew build
+            sudo systemctl restart gateway
+          EOF
