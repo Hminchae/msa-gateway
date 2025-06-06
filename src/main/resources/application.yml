@@ -1,1 +1,55 @@
-spring.application.name=wizlit
+
+spring:
+  application:
+    name: wizlit
+#  security:
+#    oauth2:
+#      resourceserver:
+#        jwt:
+#          issuer-uri: http://localhost:8080/realms/your-realm
+#          jwk-set-uri: http://localhost:8080/realms/your-realm/protocol/openid-connect/certs
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true   # Eureka에서 동적으로 서비스 이름 가져와 라우팅
+          lower-case-service-id: true  # 서비스 이름 소문자로 변환
+#      routes:
+#        - id: service-one
+#          uri: http://localhost:8081
+#          predicates:
+#            - Path=/api/service-one/**
+##          filters:
+##            - RewritePath=/api/service-one/(?<segment>.*), /$\{segment}
+##            - RemoveRequestHeader=Cookie
+#
+#        - id: service-two
+#          uri: http://localhost:8082
+#          predicates:
+#            - Path=/api/service-two/**
+#          filters:
+#            - RewritePath=/api/service-two/(?<segment>.*), /$\{segment}
+#            - RemoveRequestHeader=Cookie
+
+server:
+  port: 8000
+
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+    org.springframework.security: DEBUG
+    reactor.netty: INFO
+
+#keycloak:
+#  realm: master
+#  auth-server-url: http://localhost:8080/realms/master/broker/google/endpoint
+#  resource: wizlit-gateway
+#  credentials:
+#    secret: your-client-secret
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka
