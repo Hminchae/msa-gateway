@@ -14,6 +14,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Decode Check
+        run: |
+          echo "${{ secrets.EC2_GATEWAY_SSH_KEY_B64 }}" | base64 -d > id_rsa_test
+          file id_rsa_test || echo "디코딩 실패"
+          head -n 2 id_rsa_test || echo "출력 불가"
+
       - name: Setup SSH Key
         run: |
               mkdir -p ~/.ssh
