@@ -3,8 +3,8 @@ name: Deploy Gateway
 on:
   push:
     branches:
-      - main
-  workflow_dispatch:
+      - main  # main 브랜치 push 시 자동 실행
+  workflow_dispatch: # 수동 실행도 가능
 
 jobs:
   deploy-gateway:
@@ -24,8 +24,19 @@ jobs:
       - name: Deploy to EC2 (Gateway)
         run: |
           ssh ${{ secrets.EC2_GATEWAY_USER }}@${{ secrets.EC2_GATEWAY_HOST }} << 'EOF'
+            set -e  # 오류 발생 시 즉시 종료
+
+            # 1. 디렉토리가 없으면 clone, 있으면 pull
+            if [ ! -d ~/gateway ]; then
+              git clone -b develop https://github.com/YOUR_ID/YOUR_REPO.git ~/gateway
+            fi
+
             cd ~/gateway
             git pull origin develop
-            ./gradlew build
+
+            # 2. Gradle 빌드 (wrapper가 있는 경우)
+            ./gradlew clean bootJar
+
+            # 3. systemctl로 서비스 재시작
             sudo systemctl restart gateway
           EOF
