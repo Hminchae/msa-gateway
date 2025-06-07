@@ -45,6 +45,7 @@ jobs:
             ./gradlew clean bootJar --info
 
             # systemd 서비스 재시작
+            sudo systemctl daemon-reload
             sudo systemctl restart gateway || echo "서비스가 없으면 무시"
 
             # 세션 명확히 종료
